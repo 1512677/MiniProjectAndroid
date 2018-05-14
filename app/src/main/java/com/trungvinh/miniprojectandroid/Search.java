@@ -1,10 +1,12 @@
 package com.trungvinh.miniprojectandroid;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -25,9 +27,12 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 public class Search extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     public static final int TYPE_SCHOOL = 82;
@@ -51,6 +56,8 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
     private GoogleApiClient mGoogleApiClient;
     private com.trungvinh.miniprojectandroid.PlaceArrayAdapter mPlaceArrayAdapter;
     private Place placeSearch;
+    private String placeCurrent_name;
+    private String placeCurrent_add;
     private ResultCallback<PlaceBuffer> mUpdatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
@@ -146,13 +153,17 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Search.this, GoogleMapFragment.class);
-                i.putExtra("name",placeSearch.getName().toString());
-                i.putExtra("lat",placeSearch.getLatLng().latitude);
-                i.putExtra("lng",placeSearch.getLatLng().longitude);
+                i.putExtra("name", placeSearch.getName().toString());
+                i.putExtra("lat", placeSearch.getLatLng().latitude);
+                i.putExtra("lng", placeSearch.getLatLng().longitude);
+                i.putExtra("addSearch", placeSearch.getAddress().toString());
+                i.putExtra("nameCurrent", placeCurrent_name);
+                i.putExtra("addCurrent", placeCurrent_add);
                 startActivity(i);
             }
         });
 
+        guessCurrentPlace();
     }
 
     @Override
@@ -177,5 +188,34 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
     public void onConnectionSuspended(int i) {
         mPlaceArrayAdapter.setGoogleApiClient(null);
         Log.e(LOG_TAG, "Google Places API connection suspended.");
+    }
+
+    private void guessCurrentPlace() {
+        if (ActivityCompat.checkSelfPermission(this, permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        Task<PlaceLikelihoodBufferResponse> placeResult = Places.getPlaceDetectionClient(this).getCurrentPlace(null);
+        placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
+            @Override
+            public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
+                PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
+//                for (PlaceLikelihood placeLikelihood : likelyPlaces) {
+//                    Log.e(placeLikelihood.getPlace().getName().toString(), String.format("Place '%s' has likelihood: %g",
+//                            placeLikelihood.getPlace().getName(),
+//                            placeLikelihood.getLikelihood()));
+//                }
+                placeCurrent_name = likelyPlaces.get(0).getPlace().getName().toString();
+                placeCurrent_add = likelyPlaces.get(0).getPlace().getAddress().toString();
+                Log.e("testAAA", placeCurrent_name);
+                likelyPlaces.release();
+            }
+        });
     }
 }

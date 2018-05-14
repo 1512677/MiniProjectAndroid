@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,14 +19,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import FindDirection.DirectionFinder;
 import FindDirection.DirectionFinderListener;
 import FindDirection.Route;
 
@@ -38,8 +40,11 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
     FloatingActionButton currentLocation, placeLocation, goDirection;
     private GoogleMap mMap;
     private String name;
-    private List<Marker> originMarkers = new ArrayList<>();
-    private List<Marker> destinationMarkers = new ArrayList<>();
+    private String nameCurrent;
+    private String addSearch;
+    private String addCurrent;
+    //    private List<Marker> originMarkers = new ArrayList<>();
+//    private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
 
@@ -54,8 +59,13 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
 
         Intent i = this.getIntent();
         name = i.getStringExtra("name");
+        nameCurrent = i.getStringExtra("nameCurrent");
         lat = i.getDoubleExtra("lat", 0);
         lng = i.getDoubleExtra("lng", 0);
+        addSearch = i.getStringExtra("addSearch");
+        addCurrent = i.getStringExtra("addCurrent");
+        Log.e("name", name);
+        Log.e("name Current", nameCurrent);
         Log.e("lat", Double.toString(lat));
         Log.e("lng", Double.toString(lng));
 
@@ -74,6 +84,28 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
                 GoSearchPlace();
             }
         });
+
+        goDirection = (FloatingActionButton) findViewById(R.id.goDirection);
+        goDirection.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FindDirectionPlease();
+            }
+        });
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(lat, lng))
+                .title(name)
+        );
+        mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(LocationService.lastLocation.getLatitude(), LocationService.lastLocation.getLongitude()))
+                .title("Your current location: " + nameCurrent)
+        );
+        GoSearchPlace();
     }
 
     void GoSearchPlace() {
@@ -101,18 +133,23 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(lat, lng))
-                .title(name)
-        );
-        mMap.addMarker(new MarkerOptions()
-                .position(new LatLng(LocationService.lastLocation.getLatitude(), LocationService.lastLocation.getLongitude()))
-                .title("Your current location")
-        );
-        GoSearchPlace();
+    private void FindDirectionPlease() {
+        String origin = addCurrent;
+        String destination = addSearch;
+        if (origin.isEmpty()) {
+            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (destination.isEmpty()) {
+            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            new DirectionFinder(this, origin, destination).execute();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -120,17 +157,17 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
         progressDialog = ProgressDialog.show(this, "Please wait.",
                 "Finding direction..!", true);
 
-        if (originMarkers != null) {
-            for (Marker marker : originMarkers) {
-                marker.remove();
-            }
-        }
-
-        if (destinationMarkers != null) {
-            for (Marker marker : destinationMarkers) {
-                marker.remove();
-            }
-        }
+//        if (originMarkers != null) {
+//            for (Marker marker : originMarkers) {
+//                marker.remove();
+//            }
+//        }
+//
+//        if (destinationMarkers != null) {
+//            for (Marker marker : destinationMarkers) {
+//                marker.remove();
+//            }
+//        }
 
         if (polylinePaths != null) {
             for (Polyline polyline : polylinePaths) {
@@ -143,20 +180,20 @@ public class GoogleMapFragment extends FragmentActivity implements OnMapReadyCal
     public void onDirectionFinderSuccess(List<Route> routes) {
         progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
-        originMarkers = new ArrayList<>();
-        destinationMarkers = new ArrayList<>();
+//        originMarkers = new ArrayList<>();
+//        destinationMarkers = new ArrayList<>();
 
         for (Route route : routes) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
             ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
             ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
 
-            originMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .title(route.startAddress)
-                    .position(route.startLocation)));
-            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .title(route.endAddress)
-                    .position(route.endLocation)));
+//            originMarkers.add(mMap.addMarker(new MarkerOptions()
+//                    .title(route.startAddress)
+//                    .position(route.startLocation)));
+//            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
+//                    .title(route.endAddress)
+//                    .position(route.endLocation)));
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
