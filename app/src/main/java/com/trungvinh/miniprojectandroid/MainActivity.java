@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Start service location
         startService(new Intent(this, LocationService.class));
         com.trungvinh.miniprojectandroid.NoteManager.initNoteManager(this);
+        com.trungvinh.miniprojectandroid.CurrentSearchManager.initCurrentSearchManager(this);
+        com.trungvinh.miniprojectandroid.BookmarkManager.initBookmarkManager(this);
     }
 
     @Override
@@ -63,5 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         stopService(new Intent(getBaseContext(), LocationService.class));
         com.trungvinh.miniprojectandroid.NoteManager.UpdateFile(this);
+        com.trungvinh.miniprojectandroid.CurrentSearchManager.UpdateFile(this);
+        com.trungvinh.miniprojectandroid.BookmarkManager.UpdateFile(this);
     }
 }

@@ -92,6 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Name Place"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -103,6 +104,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Address"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -114,6 +116,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Place ID"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -125,6 +128,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Phone"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -136,6 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Website"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -147,6 +152,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Location"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView
@@ -159,6 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Your note here"
+                        android:textColor="@color/blueraspberry"
                         android:textStyle="bold" />
 
                     <TextView

@@ -12,24 +12,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
- * Created by TrungVinh on 5/15/2018.
+ * Created by TrungVinh on 5/16/2018.
  */
 
-public class NoteManager {
-    private static final String mfilename = "savenote.json";
-    private static HashMap<String, String> mDataMap = new HashMap<String, String>();
+public class CurrentSearchManager {
+    private static final String mfilename = "savecurrentsearch.json";
+    public static ArrayList<String> mName = new ArrayList<String>();
+    public static ArrayList<String> mAddress = new ArrayList<String>();
 
-    public static void initNoteManager(Context context) {
+    public static void initCurrentSearchManager(Context context) {
         AppCompatActivity mMainActivity = (AppCompatActivity) context;
         try {
             //mMainActivity.deleteFile(mfilename);
             if (!fileExists(context, mfilename)) {
                 File file = new File(mMainActivity.getFilesDir(), mfilename);
-                setNotebyId("-1", "empty");
+                addItem("empty", "empty");
                 UpdateFile(context);
             }
             FileInputStream inputStream = mMainActivity.openFileInput(mfilename);
@@ -42,10 +42,10 @@ public class NoteManager {
             Log.e("dataReadInit", data);
             // Convert json abject to data hashmap
             JSONObject reader = new JSONObject(data);
-            JSONArray arrayData = reader.getJSONArray("arrayData");
+            JSONArray arrayData = reader.getJSONArray("arrayDataCurrent");
             for (int i = 0; i < arrayData.length(); i++) {
                 JSONObject mem = arrayData.getJSONObject(i);
-                mDataMap.put(mem.getString("id"), mem.getString("note"));
+                addItem(mem.getString("name"), mem.getString("address"));
             }
             inputStream.close();
         } catch (Exception e) {
@@ -53,14 +53,22 @@ public class NoteManager {
         }
     }
 
-    public static void setNotebyId(String id, String note) {
-        mDataMap.put(id, note);
-        //return "Note here";
+    static public void initData(Context context) {
+        mName.clear();
+        mAddress.clear();
+        addItem("empty", "empty");
+        UpdateFile(context);
+        addItem("empty", "empty");
     }
 
-    public static String getNotebyId(String s) {
-        return mDataMap.get(s);
-        //return "Note here";
+    public static void addItem(String name, String address) {
+        mName.add(name);
+        mAddress.add(address);
+    }
+
+    public static void removeItem(int index) {
+        mName.remove(index);
+        mAddress.remove(index);
     }
 
     public static boolean fileExists(Context context, String filename) {
@@ -74,14 +82,13 @@ public class NoteManager {
     public static void UpdateFile(Context context) {
         AppCompatActivity mMainActivity = (AppCompatActivity) context;
         // Prepare data
-        String data = "{\"arrayData\":[";
-        Iterator myVeryOwnIterator = mDataMap.keySet().iterator();
-        while (myVeryOwnIterator.hasNext()) {
-            String id = (String) myVeryOwnIterator.next();
-            String note = (String) mDataMap.get(id);
+        String data = "{\"arrayDataCurrent\":[";
+        for (int i = 0; i < mName.size(); i++) {
+            String name = mName.get(i);
+            String address = mAddress.get(i);
             String arrayElement = "\n{\n" +
-                    "\t\"id\":\"" + id + "\",\n" +
-                    "\t\"note\":\"" + note + "\"\n" +
+                    "\t\"name\":\"" + name + "\",\n" +
+                    "\t\"address\":\"" + address + "\"\n" +
                     "},";
             data += arrayElement;
         }
@@ -104,17 +111,7 @@ public class NoteManager {
             e.printStackTrace();
         }
         Log.e("dataUpdateFile", data);
-    }
-
-    private static void LogDataCurrent() {
-        String data = "";
-        Iterator myVeryOwnIterator = mDataMap.keySet().iterator();
-        while (myVeryOwnIterator.hasNext()) {
-            String id = (String) myVeryOwnIterator.next();
-            String note = (String) mDataMap.get(id);
-            String arrayElement = id + ':' + note + '\n';
-            data += arrayElement;
-        }
-        Log.e("LogDataCurrent: ", data);
+        mName.clear();
+        mAddress.clear();
     }
 }

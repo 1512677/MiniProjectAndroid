@@ -1,8 +1,10 @@
 package com.trungvinh.miniprojectandroid;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -57,6 +59,36 @@ public class SaveLocation extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(SaveLocation.this, InputNote.class);
                 startActivityForResult(i, INPUT_NOTE_REQUEST);
+            }
+        });
+
+        ibtn_bookmarkSave.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean ok = BookmarkManager.addItem(mNameTextView.getText().toString(), mAddressTextView.getText().toString());
+                if (ok) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(SaveLocation.this).create();
+                    alertDialog.setTitle("Success");
+                    alertDialog.setMessage("Add Bookmark Success");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Coutinue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(SaveLocation.this).create();
+                    alertDialog.setTitle("Success");
+                    alertDialog.setMessage("Place Already Added");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Coutinue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
             }
         });
 

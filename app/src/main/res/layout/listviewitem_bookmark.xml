@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+
+        <TextView
+            android:id="@+id/tvi_bookmark_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/blueraspberry"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvi_bookmark_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Address" />
+
+        <Button
+            android:id="@+id/btn_deleteBookmark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/thunderbird"
+            android:text="Delete"
+            android:textColor="#fff" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

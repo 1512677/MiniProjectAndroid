@@ -3,12 +3,14 @@ package com.trungvinh.miniprojectandroid;
 import android.Manifest;
 import android.Manifest.permission;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
@@ -42,6 +44,8 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
     private static final String LOG_TAG = "MainActivity";
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
+    public static int Activity_Recent_Call = 1;
+    public static int Activity_Bookmark_Call = 2;
     private AutocompleteFilter mfilter = new AutocompleteFilter.Builder()
             .setTypeFilter(AutocompleteFilter.TYPE_FILTER_REGIONS)
             .setTypeFilter(TYPE_LOCALITY)
@@ -81,6 +85,8 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
             mNoteTextView.setText(NoteManager.getNotebyId(place.getId().toString()));
             mLatLng.setText('(' + Double.toString(place.getLatLng().latitude) + ',' + Double.toString(place.getLatLng().longitude) + ')');
             placeSearch = place;
+
+            CurrentSearchManager.addItem(place.getName().toString(), place.getAddress().toString());
         }
     };
     private AdapterView.OnItemClickListener mAutocompleteClickListener = new AdapterView.OnItemClickListener() {
@@ -174,7 +180,46 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
             }
         });
 
+        ibtn_bookmark.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean ok = BookmarkManager.addItem(placeSearch.getName().toString(), placeSearch.getAddress().toString());
+                if (ok) {
+                    AlertDialog alertDialog = new AlertDialog.Builder(Search.this).create();
+                    alertDialog.setTitle("Success");
+                    alertDialog.setMessage("Add Bookmark Success");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Coutinue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                } else {
+                    AlertDialog alertDialog = new AlertDialog.Builder(Search.this).create();
+                    alertDialog.setTitle("Success");
+                    alertDialog.setMessage("Place Already Added");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Coutinue",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            }
+        });
+
         guessCurrentPlace();
+
+        int callingActivity = getIntent().getIntExtra("calling-activity", 0);
+        if (callingActivity == Activity_Recent_Call) {
+            String callingName = getIntent().getStringExtra("calling-name");
+            mAutocompleteTextView.setText(callingName);
+        } else if (callingActivity == Activity_Bookmark_Call) {
+            String callingName = getIntent().getStringExtra("calling-name");
+            mAutocompleteTextView.setText(callingName);
+        }
     }
 
     @Override
