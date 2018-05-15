@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.trungvinh.miniprojectandroid.MainActivity">
+    tools:context="com.trungvinh.miniprojectandroid.SaveLocation">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,39 +14,14 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <LinearLayout
+
+        <Button
+            android:id="@+id/btn_getNearLocation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground">
-
-                <ImageView
-                    android:layout_width="54dp"
-                    android:layout_height="54dp"
-                    android:padding="10dp"
-                    android:src="@drawable/ic_search_black_24dp" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="48dp"
-                    android:layout_marginTop="5dp"
-                    android:hint="Enter Place Here" />
-
-            </android.support.v7.widget.CardView>
-
-        </LinearLayout>
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:backgroundTint="@color/blueraspberry"
+            android:text="Get place near my location" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -60,11 +35,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Place result will display below:"
+            android:text="You are near here:"
             android:textStyle="bold" />
 
         <LinearLayout
-            android:id="@+id/layout_display"
+            android:id="@+id/layout_displaySave"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="15dp"
@@ -95,7 +70,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/name"
+                        android:id="@+id/nameSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -106,7 +81,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/address"
+                        android:id="@+id/addressSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -117,7 +92,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/place_id"
+                        android:id="@+id/place_idSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -128,7 +103,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/phone"
+                        android:id="@+id/phoneSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -139,7 +114,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/web"
+                        android:id="@+id/webSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -150,7 +125,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/location"
+                        android:id="@+id/locationSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:autoLink="web" />
@@ -162,7 +137,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/mynote"
+                        android:id="@+id/mynoteSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:autoLink="web" />
@@ -179,35 +154,14 @@
                 <TableRow>
 
                     <ImageButton
-                        android:id="@+id/ibtn_phone"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_phone" />
-
-                    <ImageButton
-                        android:id="@+id/ibtn_web"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_web" />
-
-                    <ImageButton
-                        android:id="@+id/ibtn_map"
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_marginLeft="10dp"
-                        android:src="@drawable/icon_googlemap" />
-
-                    <ImageButton
-                        android:id="@+id/ibtn_NoteInfo"
+                        android:id="@+id/ibtn_NoteInfoSave"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_marginLeft="10dp"
                         android:src="@drawable/icon_takenote" />
 
                     <ImageButton
-                        android:id="@+id/ibtn_bookmark"
+                        android:id="@+id/ibtn_bookmarkSave"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
                         android:layout_marginLeft="10dp"
@@ -222,4 +176,15 @@
     </LinearLayout>
 
 </ScrollView>
+
+
+
+
+
+
+
+
+
+
+
 

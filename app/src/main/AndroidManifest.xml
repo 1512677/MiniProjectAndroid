@@ -65,6 +65,9 @@
         <activity
             android:name=".Search"
             android:label="Search Places"></activity>
+        <activity
+            android:name=".InputNote"
+            android:label="Input Note"></activity>
         <activity android:name=".GoogleMapFragment"></activity>
 
         <service android:name=".LocationService" />

@@ -2,6 +2,7 @@ package com.trungvinh.miniprojectandroid;
 
 import android.Manifest;
 import android.Manifest.permission;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -37,6 +38,7 @@ import com.google.android.gms.tasks.Task;
 public class Search extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
     public static final int TYPE_SCHOOL = 82;
     public static final int TYPE_LOCALITY = 1009;
+    private static final int INPUT_NOTE_REQUEST = 3;
     private static final String LOG_TAG = "MainActivity";
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(new LatLng(37.398160, -122.180831), new LatLng(37.430610, -121.972090));
@@ -51,7 +53,7 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
     private TextView mIdTextView;
     private TextView mPhoneTextView;
     private TextView mWebTextView;
-    private TextView mAttTextView;
+    private TextView mNoteTextView;
     private TextView mLatLng;
     private GoogleApiClient mGoogleApiClient;
     private com.trungvinh.miniprojectandroid.PlaceArrayAdapter mPlaceArrayAdapter;
@@ -76,9 +78,7 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
             mIdTextView.setText(Html.fromHtml(place.getId() + ""));
             mPhoneTextView.setText(Html.fromHtml(place.getPhoneNumber() + ""));
             mWebTextView.setText(place.getWebsiteUri() + "");
-            if (attributions != null) {
-                mAttTextView.setText(Html.fromHtml(attributions.toString()));
-            }
+            mNoteTextView.setText(NoteManager.getNotebyId(place.getId().toString()));
             mLatLng.setText('(' + Double.toString(place.getLatLng().latitude) + ',' + Double.toString(place.getLatLng().longitude) + ')');
             placeSearch = place;
         }
@@ -99,6 +99,7 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
     private ImageButton ibtn_web;
     private ImageButton ibtn_map;
     private ImageButton ibtn_bookmark;
+    private ImageButton ibtn_NoteInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +117,7 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
         mIdTextView = (TextView) findViewById(R.id.place_id);
         mPhoneTextView = (TextView) findViewById(R.id.phone);
         mWebTextView = (TextView) findViewById(R.id.web);
-        mAttTextView = (TextView) findViewById(R.id.att);
+        mNoteTextView = (TextView) findViewById(R.id.mynote);
         mLatLng = (TextView) findViewById(R.id.location);
         mAutocompleteTextView.setOnItemClickListener(mAutocompleteClickListener);
         mPlaceArrayAdapter = new com.trungvinh.miniprojectandroid.PlaceArrayAdapter(this, android.R.layout.simple_list_item_1,
@@ -126,7 +127,9 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
         ibtn_phone = (ImageButton) findViewById(R.id.ibtn_phone);
         ibtn_web = (ImageButton) findViewById(R.id.ibtn_web);
         ibtn_map = (ImageButton) findViewById(R.id.ibtn_map);
+        ibtn_NoteInfo = (ImageButton) findViewById(R.id.ibtn_NoteInfo);
         ibtn_bookmark = (ImageButton) findViewById(R.id.ibtn_bookmark);
+
         // Onclick button
         ibtn_phone.setOnClickListener(new OnClickListener() {
             @Override
@@ -160,6 +163,14 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
                 i.putExtra("nameCurrent", placeCurrent_name);
                 i.putExtra("addCurrent", placeCurrent_add);
                 startActivity(i);
+            }
+        });
+
+        ibtn_NoteInfo.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Search.this, InputNote.class);
+                startActivityForResult(i, INPUT_NOTE_REQUEST);
             }
         });
 
@@ -217,5 +228,16 @@ public class Search extends AppCompatActivity implements GoogleApiClient.OnConne
                 likelyPlaces.release();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == INPUT_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
+            String note = data.getStringExtra("note");
+            NoteManager.setNotebyId(mIdTextView.getText().toString(), note);
+            mNoteTextView.setText(note);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }
