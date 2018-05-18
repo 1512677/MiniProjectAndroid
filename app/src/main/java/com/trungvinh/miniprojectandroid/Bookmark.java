@@ -31,15 +31,5 @@ public class Bookmark extends AppCompatActivity {
         customAdapter = new CustomAdapterBookmark(getApplicationContext(), al_current_name, al_current_address);
         mListView = ((ListView) findViewById(R.id.lvBookmark));
         mListView.setAdapter(customAdapter);
-
-        mListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(Bookmark.this, Search.class);
-                i.putExtra("calling-activity", 2);
-                i.putExtra("calling-name", al_current_name.get(position));
-                startActivity(i);
-            }
-        });
     }
 }

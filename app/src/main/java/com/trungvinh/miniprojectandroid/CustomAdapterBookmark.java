@@ -1,6 +1,7 @@
 package com.trungvinh.miniprojectandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -62,6 +63,15 @@ public class CustomAdapterBookmark extends BaseAdapter {
                 BookmarkManager.removeItem(position + 1);
                 removeItem(position);
                 notifyDataSetChanged();
+            }
+        });
+        ((Button) convertView.findViewById(R.id.btn_searchBookmark)).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, Search.class);
+                i.putExtra("calling-activity", 2);
+                i.putExtra("calling-name", mName.get(position));
+                context.startActivity(i);
             }
         });
         return convertView;

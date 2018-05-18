@@ -7,11 +7,13 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
@@ -34,10 +36,12 @@ public class BookmarkManager {
             }
             FileInputStream inputStream = mMainActivity.openFileInput(mfilename);
             // read all data for file
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             String data = "";
-            int c;
-            while ((c = inputStream.read()) != -1) {
-                data = data + Character.toString((char) c);
+            String line;
+            while ((line = br.readLine()) != null) {
+                data += line;
+                data += '\n';
             }
             Log.e("dataReadInit", data);
             // Convert json abject to data hashmap
